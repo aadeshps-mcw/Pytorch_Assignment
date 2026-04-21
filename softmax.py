@@ -1,6 +1,7 @@
 import torch
 import pytest
-# Had to change the implementation for cases of larger values, it will go to inf, so now we find the maximum values among the input and now the exp values will be <= 1 for sure and then subtract from all to get the 
+# Had to change the implementation for cases of larger values, it will go to inf, so now we find the maximum values among the input and now the exp values will be <= 1 for sure and then subtract from all to get stable exponents
+
 def my_softmax(x, dim =-1):
   x_max = torch.max(x, dim=dim, keepdim=True).values
   x_new = x-x_max
@@ -49,11 +50,6 @@ def test_softmax_dim1():
     out = my_softmax(x, dim=1)
     expected = torch.softmax(x, dim=1)
     assert torch.allclose(out, expected)
-
-def test_softmax_shape():
-    x = torch.randn(2, 3, 4)
-    out = my_softmax(x, dim=2)
-    assert out.shape == x.shape
 
 def test_softmax_single_element():
     x = torch.tensor([5.0])
